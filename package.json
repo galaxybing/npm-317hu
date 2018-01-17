@@ -1,0 +1,31 @@
+{
+  "name": "npm-317hu",
+  "version": "0.0.1",
+  "description": "",
+  "bin": {
+    "npm317hu": "./bin/npm317hu"
+  },
+  "scripts": {
+    "test": "ava"
+  },
+  "keywords": [
+    "npm",
+    "save",
+    "package",
+    "version",
+    "@317hu"
+  ],
+  "author": "",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/galaxybing/npm-317hu.git"
+  },
+  "dependencies": {
+    "yargs": "^4.3.1"
+  },
+  "devDependencies": {
+    "ava": "^0.15.2",
+    "rimraf": "^2.5.2"
+  }
+}
