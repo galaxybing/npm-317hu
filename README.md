@@ -6,11 +6,11 @@ Add feature: 1) Save cnpm's @317hu/* installed package(s) to package.json. 2) Co
 
 ## Install
 
-`npm install npm317hu -g`
+`npm install npm317 -g`
 
 ## Usage
 
-`npm317hu <name> [option]`
+`npm317 <name> [option]`
 
 ### Options
 
@@ -22,10 +22,10 @@ Add feature: 1) Save cnpm's @317hu/* installed package(s) to package.json. 2) Co
 ### Examples
 
 ```
-npm317hu @317hu/MainTemplateLayout                                      Save to @317huDependencies
-npm317hu @317hu/MainTemplateLayout --dev                                Save to devDependencies
-npm317hu @317hu/MainTemplateLayout @317hu/CascaderCheckboxSelect        Save * to @317huDependencies
-npm317hu @317hu/MainTemplateLayout @317hu/CascaderCheckboxSelect --dev  Save * to devDependencies
+npm317 @317hu/MainTemplateLayout                                      Save to @317huDependencies
+npm317 @317hu/MainTemplateLayout --dev                                Save to devDependencies
+npm317 @317hu/MainTemplateLayout @317hu/CascaderCheckboxSelect        Save * to @317huDependencies
+npm317 @317hu/MainTemplateLayout @317hu/CascaderCheckboxSelect --dev  Save * to devDependencies
 ```
 
 ## License

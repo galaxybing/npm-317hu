@@ -17,18 +17,52 @@ var argv = require('yargs')
     .alias('h', 'help')
     .alias('v', 'version')
     .version(function () {
-      return require('../package.json').version;
+      return require('../package.json').version; // echo version
     }).argv;
 
+var colors = require('colors');
 var pwd = process.cwd();
-var pkgNames = argv._;
-var pkgs = {};
+var execCommond = argv._.length > 0 ? argv._[0] : 'none';
+var pkgNames = argv._.length > 1 ? argv._.slice(1) : [];
 
-pkgNames.forEach(function (pkgName) {
-  pkgs[pkgName] = '^' + getPkgVersion(pkgName);
+// exec npm install
+var spawn = require('child_process').spawn;
+var npm317huProcess = spawn("bash"); // spawn("/bin/bash");
+function onData(data) {
+  process.stdout.write(data);
+}
+npm317huProcess.on('error', function () {
+  console.log("error");
+  console.log(arguments);
 });
 
-saveDeps(pkgs);
+npm317huProcess.stdout.on('data', onData); //
+npm317huProcess.stderr.on('data', onData); // catch err?
+npm317huProcess.on('close', (code) => {
+  var pkgs = {};
+  pkgNames.forEach(function (pkgName) {
+    pkgs[pkgName] = '^' + getPkgConfig('node_modules/' + pkgName).version;
+  });
+  saveDeps(pkgs);
+});
+
+// npm317huProcess.stdin.write('cd / \n');
+// npm317huProcess.stdin.write('pwd \n');
+// npm317huProcess.stdin.write('ls');
+if (pkgNames.length === 0 && execCommond === 'install') {
+  // collect @317huDependencies packages
+  var pkgNamesObj = getPkgConfig()[`@317huDependencies`];
+  var pkgNamesArr = [];
+  // Object.keys(pkgNamesObj).forEach(
+  for (var key in pkgNamesObj) {
+    pkgNamesArr.push(key+'@'+pkgNamesObj[key]);
+  }
+  npm317huProcess.stdin.write(`npm --registry=http://registry.npm.intra.317hu.com ${execCommond} ${pkgNamesArr.join(' ')}  \n`);
+} else {
+  npm317huProcess.stdin.write(`npm --registry=http://registry.npm.intra.317hu.com ${execCommond} ${pkgNames.join(' ')}  \n`);
+}
+
+npm317huProcess.stdin.end();
 
 /**
  * read file and write file
@@ -46,21 +80,25 @@ function saveDeps (pkgs) {
 
     if (argv.dev) {
       pkgObj.devDependencies = addPkgsToDepObj(pkgs, pkgObj.devDependencies || {});
-    } else {
-      pkgObj.dependencies = addPkgsToDepObj(pkgs, pkgObj.dependencies || {});
+    } else { // default config
+      // pkgObj.dependencies = addPkgsToDepObj(pkgs, pkgObj.dependencies || {});
+
+      // addPkgsToDepObj(pkgs, pkgObj[`@317huDependencies`] || {}); // inlined 
+      // 
+      // 处理 @317huDependencies 字段原来没有，需要新生成情况（进行赋值操作）：
+      pkgObj[`@317huDependencies`] = addPkgsToDepObj(pkgs, pkgObj[`@317huDependencies`] || {});
     }
-
-    var pkgStr = JSON.stringify(pkgObj, null, 2) + '\n';
-
+    var pkgStr = JSON.stringify(pkgObj, null, 2); // 序列化对象所有的属性，并设置 2 个空格缩进排版
     fs.writeFile(path.resolve(pwd, 'package.json'), pkgStr, function (err) {
       if (err) {
         console.error(err);
         process.exit(1);
       }
-
+      console.log(colors.green('Successfully install...'));
       Object.keys(sortObject(pkgs)).forEach(function (key) {
-        console.log(key + '@' + pkgs[key]);
+        console.log(colors.green(' %s \n'), key + '@' + pkgs[key]);
       });
+
     });
   });
 }
@@ -86,8 +124,13 @@ function addPkgsToDepObj (pkgs, depObj) {
  * @param {String} pkgName - package name
  * @return {String} version - package version
  */
-function getPkgVersion (pkgName) {
-  var pkgPath = path.resolve(pwd, 'node_modules', pkgName, 'package.json');
+function getPkgConfig (pkgName) {
+  var pkgPath;
+  if (pkgName) {
+    pkgPath = path.resolve(pwd, pkgName, 'package.json');
+  } else {
+    pkgPath = path.resolve(pwd, 'package.json');
+  }
   var pkg;
 
   if (fs.existsSync(pkgPath)) {
@@ -97,7 +140,7 @@ function getPkgVersion (pkgName) {
     process.exit(1);
   }
 
-  return pkg.version;
+  return pkg;
 }
 
 /**
