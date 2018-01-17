@@ -1,9 +1,9 @@
 {
   "name": "npm-317hu",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "",
   "bin": {
-    "npm317hu": "./bin/npm317hu"
+    "npm317": "./bin/npm317"
   },
   "scripts": {
     "test": "ava"
