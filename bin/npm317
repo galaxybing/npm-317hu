@@ -46,15 +46,9 @@ npm317huProcess.on('close', (code) => {
   });
   saveDeps(pkgs);
 });
-
-// npm317huProcess.stdin.write('cd / \n');
-// npm317huProcess.stdin.write('pwd \n');
-// npm317huProcess.stdin.write('ls');
 if (pkgNames.length === 0 && execCommond === 'install') {
-  // collect @317huDependencies packages
   var pkgNamesObj = getPkgConfig()[`@317huDependencies`];
   var pkgNamesArr = [];
-  // Object.keys(pkgNamesObj).forEach(
   for (var key in pkgNamesObj) {
     pkgNamesArr.push(key+'@'+pkgNamesObj[key]);
   }
@@ -65,11 +59,6 @@ if (pkgNames.length === 0 && execCommond === 'install') {
 
 npm317huProcess.stdin.end();
 
-/**
- * read file and write file
- *
- * @param {Object} pkgs - packages object to be saved
- */
 function saveDeps (pkgs) {
   fs.readFile(path.resolve(pwd, 'package.json'), function (err, data) {
     if (err) {
@@ -78,18 +67,7 @@ function saveDeps (pkgs) {
     }
 
     var pkgObj = JSON.parse(data);
-    /*
-    if (argv.dev) {
-      pkgObj.devDependencies = addPkgsToDepObj(pkgs, pkgObj.devDependencies || {});
-    } else { // default config
-      // pkgObj.dependencies = addPkgsToDepObj(pkgs, pkgObj.dependencies || {});
 
-      // addPkgsToDepObj(pkgs, pkgObj[`@317huDependencies`] || {}); // inlined 
-      // 
-      // 处理 @317huDependencies 字段原来没有，需要新生成情况（进行赋值操作）：
-      pkgObj[`@317huDependencies`] = addPkgsToDepObj(pkgs, pkgObj[`@317huDependencies`] || {});
-    }
-    */
     // 兼容 处理npm5安装时对 dependencies 属性值的写入操作：
 	  var pkgNamesListStr = JSON.stringify(pkgObj[`dependencies`]);
 	  pkgNamesListStr = pkgNamesListStr.replace(/"?@317hu\/(\w|-)+"(\s*:\s*)"(^|[0-9]|\.)+"(,|\n)?/g, '')
@@ -113,13 +91,6 @@ function saveDeps (pkgs) {
   });
 }
 
-/**
- * add package info to dependencies object and sort by keys
- *
- * @param {Object} pkgs - packages object to be added
- * @param {Object} depObj - dependencies object
- * @return {Object} sortedDepObj - sorted dependencies object after added packages
- */
 function addPkgsToDepObj (pkgs, depObj) {
   Object.keys(pkgs).forEach(function (key) {
     depObj[key] = pkgs[key];
@@ -128,12 +99,6 @@ function addPkgsToDepObj (pkgs, depObj) {
   return sortObject(depObj);
 }
 
-/**
- * get package version from node_modules/packageName/package.json
- *
- * @param {String} pkgName - package name
- * @return {String} version - package version
- */
 function getPkgConfig (pkgName) {
   var pkgPath;
   if (pkgName) {
@@ -153,12 +118,6 @@ function getPkgConfig (pkgName) {
   return pkg;
 }
 
-/**
- * sort object by keys
- *
- * @param {Object} obj - object to be sorted
- * @return {Object} sortedObj - sorted object
- */
 function sortObject (obj) {
   var sortedObj = {};
 
