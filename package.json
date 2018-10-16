@@ -1,6 +1,6 @@
 {
   "name": "npm-317hu",
-  "version": "0.0.7",
+  "version": "0.0.8",
   "description": "",
   "bin": {
     "npm317": "./bin/npm317"
