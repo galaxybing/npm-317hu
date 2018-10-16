@@ -58,7 +58,7 @@ if (pkgNames.length === 0 && execCommond === 'install') {
   for (var key in pkgNamesObj) {
     pkgNamesArr.push(key+'@'+pkgNamesObj[key]);
   }
-  npm317huProcess.stdin.write(`npm install && npm --registry=http://registry.npm.intra.317hu.com ${execCommond} ${pkgNamesArr.join(' ')}  \n`);
+  npm317huProcess.stdin.write(`rm -f package-lock.json && npm install --disturl=https://npm.taobao.org/mirrors/node && npm --registry=http://registry.npm.intra.317hu.com ${execCommond} ${pkgNamesArr.join(' ')}  \n`);
 } else {
   npm317huProcess.stdin.write(`npm -d --registry=http://registry.npm.intra.317hu.com ${execCommond} ${pkgNames.join(' ')}  \n`);
 }
