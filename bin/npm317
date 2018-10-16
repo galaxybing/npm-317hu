@@ -25,6 +25,7 @@ var pwd = process.cwd();
 var execCommond = argv._.length > 0 ? argv._[0] : 'none';
 var pkgNames = argv._.length > 1 ? argv._.slice(1) : [];
 
+console.log(colors.green('Installing...'));
 // exec npm install
 var spawn = require('child_process').spawn;
 var npm317huProcess = spawn("bash"); // spawn("/bin/bash");
@@ -39,7 +40,6 @@ npm317huProcess.on('error', function () {
 npm317huProcess.stdout.on('data', onData); //
 npm317huProcess.stderr.on('data', onData); // catch err?
 npm317huProcess.on('close', (code) => {
-  console.log(colors.green('Installing...'));
   var pkgs = {};
   pkgNames.forEach(function (pkgName) {
     pkgs[pkgName] = '^' + getPkgConfig('node_modules/' + pkgName).version;
@@ -58,7 +58,7 @@ if (pkgNames.length === 0 && execCommond === 'install') {
   for (var key in pkgNamesObj) {
     pkgNamesArr.push(key+'@'+pkgNamesObj[key]);
   }
-  npm317huProcess.stdin.write(`npm -d --registry=http://registry.npm.intra.317hu.com ${execCommond} ${pkgNamesArr.join(' ')}  \n`);
+  npm317huProcess.stdin.write(`npm install && npm --registry=http://registry.npm.intra.317hu.com ${execCommond} ${pkgNamesArr.join(' ')}  \n`);
 } else {
   npm317huProcess.stdin.write(`npm -d --registry=http://registry.npm.intra.317hu.com ${execCommond} ${pkgNames.join(' ')}  \n`);
 }
@@ -90,9 +90,11 @@ function saveDeps (pkgs) {
       pkgObj[`@317huDependencies`] = addPkgsToDepObj(pkgs, pkgObj[`@317huDependencies`] || {});
     }
     */
-
+    // 兼容 处理npm5安装时对 dependencies 属性值的写入操作：
+	  var pkgNamesListStr = JSON.stringify(pkgObj[`dependencies`]);
+	  pkgNamesListStr = pkgNamesListStr.replace(/"?@317hu\/(\w|-)+"(\s*:\s*)"(^|[0-9]|\.)+"(,|\n)?/g, '')
+	  pkgObj[`dependencies`] = JSON.parse(pkgNamesListStr);
     pkgObj[`@317huDependencies`] = addPkgsToDepObj(pkgs, pkgObj[`@317huDependencies`] || {});
-
 
     var pkgStr = JSON.stringify(pkgObj, null, 2); // 序列化对象所有的属性，并设置 2 个空格缩进排版
     fs.writeFile(path.resolve(pwd, 'package.json'), pkgStr, function (err) {

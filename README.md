@@ -24,6 +24,8 @@ npm317 @317hu/MainTemplateLayout @317hu/CascaderCheckboxSelect        Save * to 
 npm317 @317hu/MainTemplateLayout @317hu/CascaderCheckboxSelect --dev  Save * to devDependencies
 ```
 
+* windows 系统配置： `C:\nvm\npm\node_modules\npm-317hu\bin\npm317` 可以直接调试安装：npm317 install
+
 ## License
 
 MIT
