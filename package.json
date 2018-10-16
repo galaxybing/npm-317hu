@@ -1,6 +1,6 @@
 {
   "name": "npm-317hu",
-  "version": "0.0.2",
+  "version": "0.0.5",
   "description": "",
   "bin": {
     "npm317": "./bin/npm317"
@@ -19,7 +19,7 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/galaxybing/npm-317hu.git"
+    "url": "git@gitlab.317hu.com:dev-web/frontend-ui-startkit.git"
   },
   "dependencies": {
     "yargs": "^4.3.1",
@@ -29,5 +29,11 @@
   },
   "devDependencies": {
     
-  }
+  },
+  "maintainers": [
+    {
+      "name": "galaxyw",
+      "email": "wangyh@317hu.com"
+    }
+  ]
 }

@@ -39,6 +39,7 @@ npm317huProcess.on('error', function () {
 npm317huProcess.stdout.on('data', onData); //
 npm317huProcess.stderr.on('data', onData); // catch err?
 npm317huProcess.on('close', (code) => {
+  console.log(colors.green('Installing...'));
   var pkgs = {};
   pkgNames.forEach(function (pkgName) {
     pkgs[pkgName] = '^' + getPkgConfig('node_modules/' + pkgName).version;
@@ -57,9 +58,9 @@ if (pkgNames.length === 0 && execCommond === 'install') {
   for (var key in pkgNamesObj) {
     pkgNamesArr.push(key+'@'+pkgNamesObj[key]);
   }
-  npm317huProcess.stdin.write(`npm --registry=http://registry.npm.intra.317hu.com ${execCommond} ${pkgNamesArr.join(' ')}  \n`);
+  npm317huProcess.stdin.write(`npm -d --registry=http://registry.npm.intra.317hu.com ${execCommond} ${pkgNamesArr.join(' ')}  \n`);
 } else {
-  npm317huProcess.stdin.write(`npm --registry=http://registry.npm.intra.317hu.com ${execCommond} ${pkgNames.join(' ')}  \n`);
+  npm317huProcess.stdin.write(`npm -d --registry=http://registry.npm.intra.317hu.com ${execCommond} ${pkgNames.join(' ')}  \n`);
 }
 
 npm317huProcess.stdin.end();
@@ -77,7 +78,7 @@ function saveDeps (pkgs) {
     }
 
     var pkgObj = JSON.parse(data);
-
+    /*
     if (argv.dev) {
       pkgObj.devDependencies = addPkgsToDepObj(pkgs, pkgObj.devDependencies || {});
     } else { // default config
@@ -88,16 +89,23 @@ function saveDeps (pkgs) {
       // 处理 @317huDependencies 字段原来没有，需要新生成情况（进行赋值操作）：
       pkgObj[`@317huDependencies`] = addPkgsToDepObj(pkgs, pkgObj[`@317huDependencies`] || {});
     }
+    */
+
+    pkgObj[`@317huDependencies`] = addPkgsToDepObj(pkgs, pkgObj[`@317huDependencies`] || {});
+
+
     var pkgStr = JSON.stringify(pkgObj, null, 2); // 序列化对象所有的属性，并设置 2 个空格缩进排版
     fs.writeFile(path.resolve(pwd, 'package.json'), pkgStr, function (err) {
       if (err) {
         console.error(err);
         process.exit(1);
+      } else {
+        console.log(colors.green('Successfully installed.'));
+        Object.keys(sortObject(pkgs)).forEach(function (key) {
+          console.log(colors.green(' %s \n'), key + '@' + pkgs[key]);
+        });
       }
-      console.log(colors.green('Successfully install...'));
-      Object.keys(sortObject(pkgs)).forEach(function (key) {
-        console.log(colors.green(' %s \n'), key + '@' + pkgs[key]);
-      });
+      
 
     });
   });

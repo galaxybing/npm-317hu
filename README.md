@@ -1,12 +1,8 @@
 # npm-317hu
 
-**Forked from [sinalvee/pkg-save](https://github.com/sinalvee/pkg-save)**
-
-Add feature: 1) Save cnpm's @317hu/* installed package(s) to package.json. 2) Config npm --registry value : `http://registry.npm.intra.317hu.com`.
-
 ## Install
 
-`npm install npm317 -g`
+`npm --registry=http://registry.npm.intra.317hu.com/ install npm-317hu -g`
 
 ## Usage
 
