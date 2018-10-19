@@ -92,7 +92,7 @@ function saveDeps (pkgs) {
     */
     // 兼容 处理npm5安装时对 dependencies 属性值的写入操作：
 	  var pkgNamesListStr = JSON.stringify(pkgObj[`dependencies`]);
-	  pkgNamesListStr = pkgNamesListStr.replace(/"?@317hu\/(\w|-)+"(\s*:\s*)"(^|[0-9]|\.)+"(,|\n)?/g, '')
+	  pkgNamesListStr = pkgNamesListStr.replace(/"?@317hu\/(\w|-)+"(\s*:\s*)"(\^|~)?([0-9]|\.)+"(,|\n)?/g, '')
 	  pkgObj[`dependencies`] = JSON.parse(pkgNamesListStr);
     pkgObj[`@317huDependencies`] = addPkgsToDepObj(pkgs, pkgObj[`@317huDependencies`] || {});
 
